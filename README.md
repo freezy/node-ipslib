@@ -36,7 +36,7 @@ to rebuild the index.
 
 When accessing protected resources, ipslib will automatically try to login and
 keeps the session open, even across re-launches. If you want to logout at the
-and of a session, you'll need to logout explicitly using `Ips#logout()`.
+end of a session, you'll need to logout explicitly using `Ips#logout()`.
 
 
 ### API
