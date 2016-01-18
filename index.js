@@ -53,7 +53,7 @@ IPS.prototype._get = function(url) {
 		},
 		jar: false
 	};
-	logger.info('GET %s', config.uri);
+	logger.info('--> GET %s', config.uri);
 	return request(config);
 };
 
@@ -71,8 +71,39 @@ IPS.prototype._getAuthenticated = function(url) {
 		},
 		jar: this._cookieJar
 	};
-	logger.info('GET %s (authenticated)', config.uri);
+	logger.info('--> GET %s (authenticated)', config.uri);
 	return request(config);
+};
+
+/**
+ * Closes a session.
+ *
+ * Note that this must be called explictly, otherwise the session stays open
+ * even across restarts.
+ * @returns {Promise}
+ */
+IPS.prototype.logout = function() {
+	return Promise.try(() => {
+		// fetch another damn id
+		logger.info('--> GET %s', this._url + '/index.php');
+		return request({ uri: this._url + '/index.php', jar: this._cookieJar });
+
+	}).then(body => {
+		var m;
+		if (m = body.match(/<a\shref="([^"]+do=logout[^"]+)/)) {
+			let uri = decodeURI(m[1]).replace(/&amp;/gi, '&');
+			logger.info('--> GET %s', uri);
+			return request({ uri: uri, jar: this._cookieJar }).then(body => {
+				if (new RegExp('>' + this._username + ' &nbsp;', 'i').test(body)) {
+					throw new Error('Logout failed.');
+				}
+				logger.info('Logout successful.');
+			});
+
+		} else {
+			logger.warn('Looks like you are not logged in anyway, aborting.');
+		}
+	});
 };
 
 
@@ -91,6 +122,7 @@ IPS.prototype._login = function() {
 		if (!this._username || !this._password) {
 			throw new Error('Need valid credentials for this action. Instantiate Ips with username and password.');
 		}
+		logger.info('--> GET %s', this._url + '/');
 		return request({ uri: this._url + '/', jar: this._cookieJar });
 
 	}).then(body => {
@@ -107,6 +139,7 @@ IPS.prototype._login = function() {
 			throw new Error('Cannot find auth key in index page.');
 		}
 		// post login
+		logger.info('--> POST %s', this._url + '/index.php?app=core&module=global&section=login&do=process');
 		return request({
 			method: 'POST',
 			uri: this._url + '/index.php?app=core&module=global&section=login&do=process',

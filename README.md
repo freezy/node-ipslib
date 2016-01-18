@@ -26,15 +26,22 @@ ips.downloads.findCategory('landscapes')
 	.then(console.log);
 ```
 
-### API
-
-See code documentation.
-
-
 ### Caching
 
 Board index is saved at `~/.ipslib`. Use the `forceRefresh` option if you want
 to rebuild the index.
+
+
+### Authentication
+
+When accessing protected resources, ipslib will automatically try to login and
+keeps the session open, even across re-launches. If you want to logout at the
+and of a session, you'll need to logout explicitly using `Ips#logout()`.
+
+
+### API
+
+See code documentation.
 
 
 ### License
