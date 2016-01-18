@@ -16,6 +16,10 @@
 		"lodash": "^4.0.0",
 		"minimist": "^1.2.0",
 		"request-promise": "^2.0.0",
+		"tough-cookie-filestore": "mudkipme/tough-cookie-filestore",
 		"winston": "^2.1.1"
+	},
+	"devDependencies": {
+		"request-debug": "^0.2.0"
 	}
 }
