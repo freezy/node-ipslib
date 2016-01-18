@@ -17,7 +17,7 @@ const Downloads = require('./lib/downloads');
  * @param {string} [password] Password
  * @constructor
  */
-const IPB = function IPB(name, url, username, password) {
+const IPS = function IPS(name, url, username, password) {
 
 	this._name = name;
 	this._url = url;
@@ -25,7 +25,7 @@ const IPB = function IPB(name, url, username, password) {
 	this._password = password;
 	this._prefix = name.replace(/[^a-z0-9_-]+/gi, '-').toLowerCase();
 
-	this._cache = resolve(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'], '.ipblib');
+	this._cache = resolve(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'], '.ipslib');
 	if (!fs.existsSync(this._cache)) {
 		fs.mkdirSync(this._cache)
 	}
@@ -34,14 +34,13 @@ const IPB = function IPB(name, url, username, password) {
 	this.downloads = new Downloads(this);
 };
 
-
 /**
  * Performs a GET request to the provided URL path
  * @param path Absolute path, without domain
  * @returns Promise<T.Cheerio> Parsed HTML body
  * @private
  */
-IPB.prototype._get = function(path) {
+IPS.prototype._get = function(path) {
 	const config = {
 		uri: this._url + path,
 		transform: function(body) {
@@ -52,4 +51,4 @@ IPB.prototype._get = function(path) {
 	return request(config);
 };
 
-module.exports = IPB;
+module.exports = IPS;

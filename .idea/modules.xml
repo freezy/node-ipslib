@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/node-ipblib.iml" filepath="$PROJECT_DIR$/node-ipblib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/node-ipslib.iml" filepath="$PROJECT_DIR$/node-ipslib.iml" />
     </modules>
   </component>
 </project>

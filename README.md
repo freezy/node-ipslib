@@ -1,20 +1,31 @@
-# ipblib
+# ipslib
 
-A library for accessing IPS Community boards through a neat API.
+A JavaScript library for accessing IPS Community boards through a neat API.
 
 ### Usage
 
+It's not published on npmjs.org, so you'll have to reference it through
+GitHub directly:
+
+	npm install --save freezy/node-ipslib
+
+### Example
+	
 Instantiate with name and URL, then access modules through object. All
 functions return a Promise.
 
 ```javascript
-const Ipb = require('ipblib');
-const ipb = new Ipb("mxboard", "http://www.myboard.com");
-ipb.downloads.getCategories().then(result => {
+const Ips = require('node-ipslib');
+const ips = new Ipb("myboard", "http://www.myboard.com");
+ips.downloads.getCategories().then(result => {
 	console.log("Got results:");
 	console.log(result);
 });
 ```
+
+### API
+
+See code documentation.
 
 ### License
 

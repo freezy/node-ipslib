@@ -1,21 +1,21 @@
 {
-  "name": "ipblib",
-  "version": "0.0.1",
-  "description": "An API for accessing IPB resources.",
-  "main": "index.js",
-  "scripts": {
-    "test": "test"
-  },
-  "author": "freezy <freezy@kodi.tv>",
-  "license": "GPLv2",
-  "dependencies": {
-    "bluebird": "^3.1.1",
-    "cheerio": "^0.19.0",
-    "chrono-node": "^1.1.2",
-    "ent": "^2.2.0",
-    "lodash": "^4.0.0",
-    "minimist": "^1.2.0",
-    "request-promise": "^2.0.0",
-    "winston": "^2.1.1"
-  }
+	"name": "node-ipslib",
+	"version": "0.0.1",
+	"description": "An API for accessing IPS resources.",
+	"main": "index.js",
+	"scripts": {
+		"test": "test"
+	},
+	"author": "freezy <freezy@kodi.tv>",
+	"license": "GPLv2",
+	"dependencies": {
+		"bluebird": "^3.1.1",
+		"cheerio": "^0.19.0",
+		"chrono-node": "^1.1.2",
+		"ent": "^2.2.0",
+		"lodash": "^4.0.0",
+		"minimist": "^1.2.0",
+		"request-promise": "^2.0.0",
+		"winston": "^2.1.1"
+	}
 }
