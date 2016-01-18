@@ -20,7 +20,7 @@ const Downloads = require('./lib/downloads');
 const IPS = function IPS(name, url, username, password) {
 
 	this._name = name;
-	this._url = url;
+	this._url = url.replace(/\/$/, '');;
 	this._username = username;
 	this._password = password;
 	this._prefix = name.replace(/[^a-z0-9_-]+/gi, '-').toLowerCase();
@@ -36,13 +36,13 @@ const IPS = function IPS(name, url, username, password) {
 
 /**
  * Performs a GET request to the provided URL path
- * @param path Absolute path, without domain
+ * @param url Complete URL or path
  * @returns Promise<T.Cheerio> Parsed HTML body
  * @private
  */
-IPS.prototype._get = function(path) {
+IPS.prototype._get = function(url) {
 	const config = {
-		uri: this._url + path,
+		uri: url[0] === '/' ? this._url + url : url,
 		transform: function(body) {
 			return cheerio.load(body);
 		}

@@ -31,3 +31,4 @@ node_modules
 
 # Project files
 *.iml
+.idea/workspace.xml
