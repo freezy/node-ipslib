@@ -2,10 +2,10 @@
 
 const Promise = require('bluebird');
 const fs = require('fs');
+const rp = require('request-promise');
 const resolve = require('path').resolve;
 const logger = require('winston');
 const cheerio = require('cheerio');
-const request = require('request-promise');
 const CookieStore = require('tough-cookie-filestore');
 
 const Downloads = require('./lib/downloads');
@@ -31,12 +31,11 @@ const IPS = function IPS(name, url, username, password) {
 	if (!fs.existsSync(this._cache)) {
 		fs.mkdirSync(this._cache)
 	}
-	this._cookieJar = request.jar(new CookieStore(resolve(this._cache, this._prefix + '-cookies.json')));
+	this._cookieJar = rp.jar(new CookieStore(resolve(this._cache, this._prefix + '-cookies.json')));
 
 	// sub-modules
 	this.downloads = new Downloads(this);
 
-	//require('request-debug')(request);
 };
 
 /**
@@ -54,7 +53,7 @@ IPS.prototype._get = function(url) {
 		jar: false
 	};
 	logger.info('--> GET %s', config.uri);
-	return request(config);
+	return rp(config);
 };
 
 /**
@@ -72,7 +71,7 @@ IPS.prototype._getAuthenticated = function(url) {
 		jar: this._cookieJar
 	};
 	logger.info('--> GET %s (authenticated)', config.uri);
-	return request(config);
+	return rp(config);
 };
 
 /**
@@ -86,14 +85,14 @@ IPS.prototype.logout = function() {
 	return Promise.try(() => {
 		// fetch another damn id
 		logger.info('--> GET %s', this._url + '/index.php');
-		return request({ uri: this._url + '/index.php', jar: this._cookieJar });
+		return rp({ uri: this._url + '/index.php', jar: this._cookieJar });
 
 	}).then(body => {
 		var m;
 		if (m = body.match(/<a\shref="([^"]+do=logout[^"]+)/)) {
 			let uri = decodeURI(m[1]).replace(/&amp;/gi, '&');
 			logger.info('--> GET %s', uri);
-			return request({ uri: uri, jar: this._cookieJar }).then(body => {
+			return rp({ uri: uri, jar: this._cookieJar }).then(body => {
 				if (new RegExp('>' + this._username + ' &nbsp;', 'i').test(body)) {
 					throw new Error('Logout failed.');
 				}
@@ -123,7 +122,7 @@ IPS.prototype._login = function() {
 			throw new Error('Need valid credentials for this action. Instantiate Ips with username and password.');
 		}
 		logger.info('--> GET %s', this._url + '/');
-		return request({ uri: this._url + '/', jar: this._cookieJar });
+		return rp({ uri: this._url + '/', jar: this._cookieJar });
 
 	}).then(body => {
 
@@ -140,7 +139,7 @@ IPS.prototype._login = function() {
 		}
 		// post login
 		logger.info('--> POST %s', this._url + '/index.php?app=core&module=global&section=login&do=process');
-		return request({
+		return rp({
 			method: 'POST',
 			uri: this._url + '/index.php?app=core&module=global&section=login&do=process',
 			jar: this._cookieJar,

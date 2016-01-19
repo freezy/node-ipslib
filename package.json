@@ -20,6 +20,7 @@
 		"winston": "^2.1.1"
 	},
 	"devDependencies": {
-		"request-debug": "^0.2.0"
+		"request-debug": "^0.2.0",
+		"request": "latest"
 	}
 }
