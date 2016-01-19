@@ -5,7 +5,6 @@ const _ = require('lodash');
 const fs = require('fs');
 const rp = require('request-promise');
 const resolve = require('path').resolve;
-const logger = require('winston');
 const cheerio = require('cheerio');
 const CookieStore = require('tough-cookie-filestore');
 
@@ -37,6 +36,8 @@ const IPS = function IPS(name, url, username, password) {
 	// sub-modules
 	this.downloads = new Downloads(this);
 
+	// utils
+	this.logger = require('winston');
 };
 
 /**
@@ -53,7 +54,7 @@ IPS.prototype._get = function(url) {
 		},
 		jar: false
 	};
-	logger.info('--> GET %s', config.uri);
+	this.logger.info('--> GET %s', config.uri);
 	return rp(config);
 };
 
@@ -71,7 +72,7 @@ IPS.prototype._getAuthenticated = function(url) {
 		},
 		jar: this._cookieJar
 	};
-	logger.info('--> GET %s (authenticated)', config.uri);
+	this.logger.info('--> GET %s (authenticated)', config.uri);
 	return rp(config);
 };
 
@@ -85,23 +86,23 @@ IPS.prototype._getAuthenticated = function(url) {
 IPS.prototype.logout = function() {
 	return Promise.try(() => {
 		// fetch another damn id
-		logger.info('--> GET %s', this._url + '/index.php');
+		this.logger.info('--> GET %s', this._url + '/index.php');
 		return rp({ uri: this._url + '/index.php', jar: this._cookieJar });
 
 	}).then(body => {
 		var m;
 		if (m = body.match(/<a\shref="([^"]+do=logout[^"]+)/)) {
 			let uri = decodeURI(m[1]).replace(/&amp;/gi, '&');
-			logger.info('--> GET %s', uri);
+			this.logger.info('--> GET %s', uri);
 			return rp({ uri: uri, jar: this._cookieJar }).then(body => {
 				if (new RegExp('>' + this._username + ' &nbsp;', 'i').test(body)) {
 					throw new Error('Logout failed.');
 				}
-				logger.info('Logout successful.');
+				this.logger.info('Logout successful.');
 			});
 
 		} else {
-			logger.warn('Looks like you are not logged in anyway, aborting.');
+			this.logger.warn('Looks like you are not logged in anyway, aborting.');
 		}
 	});
 };
@@ -121,13 +122,13 @@ IPS.prototype._login = function() {
 		if (!this._username || !this._password) {
 			throw new Error('Need valid credentials for this action. Instantiate Ips with username and password.');
 		}
-		logger.info('--> GET %s', this._url + '/');
+		this.logger.info('--> GET %s', this._url + '/');
 		return rp({ uri: this._url + '/', jar: this._cookieJar });
 
 	}).then(body => {
 
 		if (new RegExp('>' + this._username + ' &nbsp;', 'i').test(body)) {
-			logger.info("User already logged, skipping login.");
+			this.logger.info("User already logged, skipping login.");
 			return;
 		}
 
@@ -138,7 +139,7 @@ IPS.prototype._login = function() {
 			throw new Error('Cannot find auth key in index page.');
 		}
 		// post login
-		logger.info('--> POST %s', this._url + '/index.php?app=core&module=global&section=login&do=process');
+		this.logger.info('--> POST %s', this._url + '/index.php?app=core&module=global&section=login&do=process');
 		return rp({
 			method: 'POST',
 			uri: this._url + '/index.php?app=core&module=global&section=login&do=process',
@@ -161,7 +162,7 @@ IPS.prototype._login = function() {
 			if (response.statusCode !== 302) {
 				throw new Error('Unexpected response when logging in (%s).', response.statusCode);
 			}
-			logger.info('Login successful.');
+			this.logger.info('Login successful.');
 		});
 	});
 };

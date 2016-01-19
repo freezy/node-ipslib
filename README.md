@@ -18,7 +18,7 @@ functions return a Promise.
 
 ```javascript
 const Ips = require('node-ipslib');
-const ips = new Ipb("myboard", "http://www.myboard.com");
+const ips = new Ips("myboard", "http://www.myboard.com", "username", "password");
 
 // download all files containing "sunset" in first category that matches "landscapes"
 ips.downloads.findCategory('landscapes')
@@ -29,9 +29,14 @@ ips.downloads.findCategory('landscapes')
 
 ### Caching
 
-Board index is saved at `~/.ipslib`. Use the `forceRefresh` option if you want
-to rebuild the index.
+Indexes are saved at `~/.ipslib`. Use the `forceRefresh` option if you want
+to rebuild the index:
 
+```javascript
+ips.downloads.getCategories({ forceRefresh: true }).then(categories => {
+	console.log("Refreshed %s categories.", categories.length);
+});
+```
 
 ### Authentication
 
@@ -47,4 +52,4 @@ See code documentation.
 
 ### License
 
-GPLv3
+GPLv2
