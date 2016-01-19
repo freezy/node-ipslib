@@ -1,6 +1,7 @@
 "use strict";
 
 const Promise = require('bluebird');
+const _ = require('lodash');
 const fs = require('fs');
 const rp = require('request-promise');
 const resolve = require('path').resolve;
@@ -21,17 +22,17 @@ const Downloads = require('./lib/downloads');
  */
 const IPS = function IPS(name, url, username, password) {
 
+	this.id = _.kebabCase(name);
 	this._name = name;
-	this._url = url.replace(/\/$/, '');;
+	this._url = url.replace(/\/$/, '');
 	this._username = username;
 	this._password = password;
-	this._prefix = name.replace(/[^a-z0-9_-]+/gi, '-').toLowerCase();
 
 	this._cache = resolve(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'], '.ipslib');
 	if (!fs.existsSync(this._cache)) {
 		fs.mkdirSync(this._cache)
 	}
-	this._cookieJar = rp.jar(new CookieStore(resolve(this._cache, this._prefix + '-cookies.json')));
+	this._cookieJar = rp.jar(new CookieStore(resolve(this._cache, this.id + '-cookies.json')));
 
 	// sub-modules
 	this.downloads = new Downloads(this);
@@ -104,7 +105,6 @@ IPS.prototype.logout = function() {
 		}
 	});
 };
-
 
 /**
  * Logs the user in.

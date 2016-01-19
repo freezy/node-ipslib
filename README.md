@@ -20,10 +20,11 @@ functions return a Promise.
 const Ips = require('node-ipslib');
 const ips = new Ipb("myboard", "http://www.myboard.com");
 
-// search files containing "sunset" in first category that matches "landscapes"
+// download all files containing "sunset" in first category that matches "landscapes"
 ips.downloads.findCategory('landscapes')
 	.then(cat => ips.downloads.findFiles('sunset', cat))
-	.then(console.log);
+	.then(files => ips.downloads.download(files, '/tmp'))
+	.then(ips.logout.bind(ips));
 ```
 
 ### Caching
