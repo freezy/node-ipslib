@@ -4,6 +4,7 @@ const Promise = require('bluebird');
 const _ = require('lodash');
 const fs = require('fs');
 const rp = require('request-promise');
+const winston = require('winston');
 const resolve = require('path').resolve;
 const cheerio = require('cheerio');
 const CookieStore = require('tough-cookie-filestore');
@@ -27,7 +28,7 @@ const IPS = function IPS(name, url, username, password) {
 	this._username = username;
 	this._password = password;
 
-	this._cache = resolve(process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'], '.ipslib');
+	this._cache = resolve(process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'], '.ipslib');
 	if (!fs.existsSync(this._cache)) {
 		fs.mkdirSync(this._cache)
 	}
@@ -37,7 +38,7 @@ const IPS = function IPS(name, url, username, password) {
 	this.downloads = new Downloads(this);
 
 	// utils
-	this.logger = require('winston');
+	this.logger = winston;
 };
 
 /**
@@ -90,9 +91,9 @@ IPS.prototype.logout = function() {
 		return rp({ uri: this._url + '/index.php', jar: this._cookieJar });
 
 	}).then(body => {
-		var m;
-		if (m = body.match(/<a\shref="([^"]+do=logout[^"]+)/)) {
-			let uri = decodeURI(m[1]).replace(/&amp;/gi, '&');
+		var match = body.match(/<a\shref="([^"]+do=logout[^"]+)/);
+		if (match) {
+			let uri = decodeURI(match[1]).replace(/&amp;/gi, '&');
 			this.logger.info('--> GET %s', uri);
 			return rp({ uri: uri, jar: this._cookieJar }).then(body => {
 				if (new RegExp('>' + this._username + ' &nbsp;', 'i').test(body)) {
