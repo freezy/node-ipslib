@@ -20,7 +20,7 @@ const Downloads = require('./lib/downloads');
  * @param {string} [password] Password
  * @constructor
  */
-const IPS = function IPS(name, url, username, password) {
+function IPS(name, url, username, password) {
 
 	this.id = _.kebabCase(name);
 	this._name = name;
@@ -39,7 +39,7 @@ const IPS = function IPS(name, url, username, password) {
 
 	// utils
 	this.logger = winston;
-};
+}
 
 /**
  * Performs a GET request to the provided URL path, as anonymous.
@@ -158,7 +158,7 @@ IPS.prototype._login = function() {
 		}).then(response => {
 
 			if (response.body.match(/username or password incorrect/i)) {
-				throw new Error('Wrong credentials when loggin in.');
+				throw new Error('Wrong credentials when logging in.');
 			}
 			if (response.statusCode !== 302) {
 				throw new Error('Unexpected response when logging in (%s).', response.statusCode);
