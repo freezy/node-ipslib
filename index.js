@@ -18,9 +18,10 @@ const Downloads = require('./lib/downloads');
  * @param {string} url URL of the board, without /index.php
  * @param {string} [username] Username
  * @param {string} [password] Password
+ * @param {{ waitPeriod: number }} [opts] Options
  * @constructor
  */
-function IPS(name, url, username, password) {
+function IPS(name, url, username, password, opts) {
 
 	this.id = _.kebabCase(name);
 	this._name = name;
@@ -35,7 +36,7 @@ function IPS(name, url, username, password) {
 	this._cookieJar = rp.jar(new CookieStore(resolve(this._cache, this.id + '-cookies.json')));
 
 	// sub-modules
-	this.downloads = new Downloads(this);
+	this.downloads = new Downloads(this, opts);
 
 	// utils
 	this.logger = winston;
