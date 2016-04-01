@@ -18,7 +18,7 @@ const Downloads = require('./lib/downloads');
  * @param {string} url URL of the board, without /index.php
  * @param {string} [username] Username
  * @param {string} [password] Password
- * @param {{ waitPeriod: number }} [opts] Options
+ * @param {{}} [opts] Options
  * @constructor
  */
 function IPS(name, url, username, password, opts) {
