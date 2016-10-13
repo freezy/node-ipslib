@@ -1,6 +1,6 @@
 "use strict";
 
-const Promise = require('bluebird');
+Promise = require('bluebird');
 const _ = require('lodash');
 const fs = require('fs');
 const rp = require('request-promise');
@@ -35,8 +35,13 @@ function IPS(name, url, username, password, opts) {
 	}
 	this._cookieJar = rp.jar(new CookieStore(resolve(this._cache, this.id + '-cookies.json')));
 
+	this._opts = opts || {};
+	this._opts.version = this._opts.version || 4;
+
+	const DownloadModule = require('./lib/v' + this._opts.version + '/downloads-ips' + this._opts.version);
+
 	// sub-modules
-	this.downloads = new Downloads(this, opts);
+	this.downloads = new DownloadModule(this, this._opts);
 
 	// utils
 	this.logger = winston;
