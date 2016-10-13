@@ -1,7 +1,7 @@
 # ipslib
 
-A JavaScript library for accessing IPS Community boards through a neat API.
-
+A JavaScript library for accessing IPS Community boards through a neat API. 
+Works with IPSv3 and IPSv4.
 
 ### Usage
 
@@ -10,7 +10,6 @@ GitHub directly:
 
 	npm install --save freezy/node-ipslib
 
-
 ### Example
 	
 Instantiate with name and URL, then access modules through object. All
@@ -18,7 +17,7 @@ functions return a Promise.
 
 ```javascript
 const Ips = require('node-ipslib');
-const ips = new Ips("myboard", "http://www.myboard.com", "username", "password");
+const ips = new Ips("myboard", "http://www.myboard.com/forums/", "username", "password", { version: 4 });
 
 // download all files containing "sunset" in first category that matches "landscapes"
 ips.downloads.findCategory('landscapes')
@@ -44,11 +43,9 @@ When accessing protected resources, ipslib will automatically try to login and
 keeps the session open, even across re-launches. If you want to logout at the
 end of a session, you'll need to logout explicitly using `Ips#logout()`.
 
-
 ### API
 
 See code documentation.
-
 
 ### License
 
