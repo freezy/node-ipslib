@@ -4,12 +4,13 @@ Promise = require('bluebird');
 const _ = require('lodash');
 const fs = require('fs');
 const rp = require('request-promise');
+const request = require('request');
 const winston = require('winston');
 const resolve = require('path').resolve;
 const cheerio = require('cheerio');
 
-// const CookieJar = require("tough-cookie").CookieJar;
-// const FileCookieStore = require("tough-cookie-filestore");
+const CookieJar = require("tough-cookie").CookieJar;
+const FileCookieStore = require("tough-cookie-filestore");
 
 const tough = require('tough-cookie');
 
@@ -40,12 +41,19 @@ module.exports = class {
 		if (!fs.existsSync(this._cache)) {
 			fs.mkdirSync(this._cache)
 		}
+		this._cookieJar = request.jar();
+		//this._cookieJar = request.jar(new FileCookieStore(resolve(this._cache, this.id + '-cookies.json')));
 		//this._cookieJar = new CookieJar(new FileCookieStore(resolve(this._cache, this.id + '-cookies.json')));
-		this._cookieJar = new tough.CookieJar(null, {});
+		//this._cookieJar = new tough.CookieJar(null, {});
+		this._cookieJar._jar.rejectPublicSuffixes = false;
 
 		this._opts = opts || {};
 		this._opts.version = this._opts.version || 4;
 
+		// utils
+		this.logger = winston;
+
+		// sub-module classes
 		const DownloadModule = require('./lib/v' + this._opts.version + '/downloads-ips' + this._opts.version);
 		const AuthModule = require('./lib/v' + this._opts.version + '/auth-ips' + this._opts.version);
 
@@ -53,8 +61,7 @@ module.exports = class {
 		this.downloads = new DownloadModule(this, this._opts);
 		this.auth = new AuthModule(this, username, password, this._url, this._cookieJar);
 
-		// utils
-		this.logger = winston;
+
 	}
 
 	/**
