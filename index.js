@@ -60,8 +60,6 @@ module.exports = class {
 		// sub-modules
 		this.downloads = new DownloadModule(this, this._opts);
 		this.auth = new AuthModule(this, username, password, this._url, this._cookieJar);
-
-
 	}
 
 	/**
